@@ -1,12 +1,13 @@
 import React from "react";
 
-const SingleCard = ({card}) => {
+const SingleCard = ({card, handleAdd}) => {
     const {cover, title} = card;
   return (
     <div>
-      <div className="card bg-base-100 w-[350px] h-[400px] shadow-sm">
+      <div className="card bg-base-100 h-[450px] shadow-sm">
         <figure>
           <img
+            className="w-full h-[250px] object-cover"
             src={cover}
             alt="Shoes"
           />
@@ -18,7 +19,7 @@ const SingleCard = ({card}) => {
             are title and actions parts
           </p>
           <div className="card-actions justify-end">
-            <button className="btn btn-primary">Buy Now</button>
+            <button className="btn btn-primary" onClick={() => handleAdd(card)}>Add to Read</button>
           </div>
         </div>
       </div>
