@@ -1,15 +1,26 @@
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { GithubAuthProvider, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import "./App.css";
 import ReadingCards from "./components/ReadCards/ReadCards";
 import { Suspense, useState } from "react";
 import { auth } from "./firebase";
+import { Link } from "react-router";
 
 function App() {
   const [user, setUser] = useState(null);
 
   const googleProvider = new GoogleAuthProvider();
 
+  const githubProvider = new GithubAuthProvider()
+
+  const handleLoginGithub = () => {
+    setUser(null)
+    signInWithPopup(auth, githubProvider)
+    .then(result => setUser(result.user))
+    .catch(error => console.log(error))
+  }
+
   const handleLogInG = () => {
+    setUser(null);
     signInWithPopup(auth, googleProvider)
       .then((result) => setUser(result.user))
       // setUser(result.user))
@@ -34,9 +45,18 @@ function App() {
         </div>
         <div className="flex gap-5 items-center">
           {!user ? (
-            <button onClick={handleLogInG} className="btn btn-primary">
-              Sing in with Google
-            </button>
+            <div className="space-x-4">
+              <button onClick={handleLogInG} className="btn btn-primary">
+                Sing in with Google
+              </button>
+              <button onClick={handleLoginGithub} className="btn btn-accent">Log In With Github</button>
+              <Link to={"/signup"}>
+                <button className="btn btn-success"> Sign Up</button>
+              </Link>
+              <Link to={'/login'}>
+                <button className="btn btn-info">Log In</button>
+              </Link>
+            </div>
           ) : (
             <div>
               <img
@@ -53,13 +73,13 @@ function App() {
                   Sign Out
                 </button>
               </div>
-              <Suspense fallback={<h1>Data Loading......</h1>}>
-                <ReadingCards cardsPromise={cardPromise}></ReadingCards>
-              </Suspense>
             </div>
           )}
         </div>
       </div>
+      <Suspense fallback={<h1>Data Loading......</h1>}>
+        <ReadingCards cardsPromise={cardPromise}></ReadingCards>
+      </Suspense>
     </>
   );
 }
