@@ -7,6 +7,7 @@ import { auth } from "../firebase";
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState(false);
+  const [errorMeassage, setErrorMessage] = useState("");
   const [createUser, setCreatedUser] = useState(null);
 
   const handleCreateUser = (e) => {
@@ -14,19 +15,34 @@ const SignUp = () => {
 
     const email = e.target.email.value;
     const password = e.target.password.value;
-
+    const passRegEx = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
+    const checkBox = e.target.terms.checked;
     setCreatedUser(null);
+    setErrorMessage("");
+    setErrorMsg(false);
+
+    if (passRegEx.test(password) === false) {
+      setErrorMessage(
+        "Password must contain eight character, one capital, one special chracter, one number."
+      );
+      return;
+    }
+
+    if(checkBox === false) {
+      setErrorMessage('Please accept our terms and conditions');
+      return;
+    }
 
     createUserWithEmailAndPassword(auth, email, password)
-    .then(result => {
+      .then((result) => {
         console.log(result.user);
-        setCreatedUser(result.user)
-    })
-    .catch(error => {
+        setCreatedUser(result.user);
+      })
+      .catch((error) => {
         console.log(error.message);
-        setErrorMsg(true);
-    })
-  }
+        setErrorMsg(error.message);
+      });
+  };
 
   return (
     <div>
@@ -76,18 +92,30 @@ const SignUp = () => {
                     <IoEye size={"25px"}></IoEye>
                   )}
                 </button>
+                <div className="my-2">
+                  <label className="label">
+                    <input
+                      type="checkbox"
+                      name="terms"
+                      className="checkbox"
+                    />
+                    Accept Our terms and conditions
+                  </label>
+                </div>
               </div>
-              <div>
-                <a className="link link-hover">Forgot password?</a>
-              </div>
-              <button className="btn btn-neutral mt-4">Login</button>
+              <button className="btn btn-neutral mt-4">Sign Up</button>
             </fieldset>
           </div>
         </div>
       </form>
       <Link to={"/"}>Go back</Link>
-      <h1 className="text-3xl text-green-600">{createUser && 'User created successfully'}</h1>
-      <h1 className="text-3xl text-red-600">{errorMsg && 'Thers been an error'}</h1>
+      <h1 className="text-3xl text-green-600">
+        {createUser && "User created successfully"}
+      </h1>
+      <h1 className="text-3xl text-red-600">{errorMsg && errorMsg}</h1>
+      <h1 className="text-3xl text-rose-600">
+        {errorMeassage && errorMeassage}
+      </h1>
     </div>
   );
 };

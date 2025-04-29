@@ -9,7 +9,6 @@ function ReadingCards({cardsPromise}) {
         const newReadItems = [...readItems, item];
         setReadItems(newReadItems);
     }
-console.log(readItems);
 
     const cards = use(cardsPromise);
 

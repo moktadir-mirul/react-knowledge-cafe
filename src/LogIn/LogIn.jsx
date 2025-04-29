@@ -42,7 +42,7 @@ const LogIn = () => {
       </div>
     </div>
     <Link to={"/"}>Go back</Link>
-    <h1 className="text-3xl text-green-600">{user && 'User logged in successfully'}</h1>
+    <h1 className="text-3xl text-green-600">{user && `${user.email} User logged in successfully`}</h1>
     <h1 className="text-3xl text-red-600">{errorMsg && errorMsg}</h1>
     </>
   );
