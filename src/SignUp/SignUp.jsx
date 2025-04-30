@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import React, { useState } from "react";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { Link } from "react-router";
@@ -37,6 +37,10 @@ const SignUp = () => {
       .then((result) => {
         console.log(result.user);
         setCreatedUser(result.user);
+        sendEmailVerification(auth.currentUser)
+        .then(() => {
+          alert('verification email sent successfully')
+        })
       })
       .catch((error) => {
         console.log(error.message);
@@ -92,7 +96,7 @@ const SignUp = () => {
                     <IoEye size={"25px"}></IoEye>
                   )}
                 </button>
-                <div className="my-2">
+                <div className="mt-2">
                   <label className="label">
                     <input
                       type="checkbox"
@@ -105,17 +109,18 @@ const SignUp = () => {
               </div>
               <button className="btn btn-neutral mt-4">Sign Up</button>
             </fieldset>
-          </div>
-        </div>
-      </form>
-      <Link to={"/"}>Go back</Link>
+            <Link to={"/"}><button className="mt-2 btn btn-warning">Go back</button></Link>
       <h1 className="text-3xl text-green-600">
-        {createUser && "User created successfully"}
+        {createUser && `${createUser.email} user created successfully`}
       </h1>
       <h1 className="text-3xl text-red-600">{errorMsg && errorMsg}</h1>
       <h1 className="text-3xl text-rose-600">
         {errorMeassage && errorMeassage}
       </h1>
+          </div>
+        </div>
+      </form>
+      
     </div>
   );
 };
