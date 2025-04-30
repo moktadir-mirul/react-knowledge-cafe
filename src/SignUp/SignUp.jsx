@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import React, { useState } from "react";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { Link } from "react-router";
@@ -13,6 +13,8 @@ const SignUp = () => {
   const handleCreateUser = (e) => {
     e.preventDefault();
 
+    const userName = e.target.name.value;
+    const photo = e.target.photoURL.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
     const passRegEx = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
@@ -41,6 +43,14 @@ const SignUp = () => {
         .then(() => {
           alert('verification email sent successfully')
         })
+        const userProfile = {
+          displayName : userName,
+          photoURL : photo
+        }
+        updateProfile(auth.currentUser, userProfile)
+          .then(() => {
+            alert('user profile updated successfully')
+          })
       })
       .catch((error) => {
         console.log(error.message);
@@ -109,6 +119,7 @@ const SignUp = () => {
               </div>
               <button className="btn btn-neutral mt-4">Sign Up</button>
             </fieldset>
+            <p className="py-2">Already have an account? <Link to={"/login"} className="text-blue-700 underline">Log in</Link></p>
             <Link to={"/"}><button className="mt-2 btn btn-warning">Go back</button></Link>
       <h1 className="text-3xl text-green-600">
         {createUser && `${createUser.email} user created successfully`}

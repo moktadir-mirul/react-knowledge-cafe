@@ -1,11 +1,15 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router";
 import { auth } from "../firebase";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 
 const LogIn = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const emailRef = useRef();
+
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -16,20 +20,33 @@ const LogIn = () => {
 
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
-        if(!result.user.emailVerified
-        ) {
-          alert('please, verify your email');
-        }
-        else {
-          console.log(result.user);
+        // if(!result.user.emailVerified
+        // ) {
+        //   alert('please, verify your email');
+        // }
+        // else {
+          
+        // }
+        console.log(result.user);
           setUser(result.user);
-        }
       })
       .catch((error) => {
         console.log(error);
         setErrorMsg(error.message);
       });
   };
+
+  const handleForgetPassword = () => {
+    const emailAdd = emailRef.current.value;
+    setErrorMsg('');
+    sendPasswordResetEmail(auth, emailAdd)
+    .then(() => {
+      alert('password reset email sent successfully')
+    })
+    .catch((err) => {
+      setErrorMsg(err.message);
+    })
+  } 
   return (
     <>
       <div className="mt-30 card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl mx-auto">
@@ -41,16 +58,22 @@ const LogIn = () => {
               type="email"
               className="input"
               name="email"
+              ref={emailRef}
               placeholder="Email"
             />
+            <div className="relative">
             <label className="label">Password</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               className="input"
               placeholder="Password"
             />
-            <div>
+            <button onClick={() => setShowPassword(!showPassword)} className="btn btn-sm absolute top-[22px] right-6 z-50">
+              {showPassword ? <IoEye size={'25px'}></IoEye> : <IoEyeOff size={'25px'}></IoEyeOff>}
+            </button>
+            </div>
+            <div onClick={handleForgetPassword}>
               <a className="link link-hover">Forgot password?</a>
             </div>
             <button className="btn btn-neutral mt-4">Login</button>
